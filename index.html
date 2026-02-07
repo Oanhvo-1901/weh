@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Be My Valentine?</title>
+<style>
+  :root{
+    --babyblue:#bfe6ff;
+    --babyblue2:#e9f7ff;
+    --ink:#1b1b1b;
+    --pink:#ff8fc8;
+    --pink2:#ffd1e6;
+    --card:#ffffffcc;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 700px at 20% 15%, var(--babyblue2), transparent 55%),
+      radial-gradient(900px 600px at 80% 20%, #fff, transparent 50%),
+      linear-gradient(135deg, var(--babyblue), #ffe8f3);
+    overflow:hidden;
+  }
+
+  .wrap{
+    width:min(920px, 92vw);
+    padding:22px;
+    position:relative;
+    z-index:2;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid #ffffff80;
+    border-radius:24px;
+    box-shadow: 0 18px 60px rgba(0,0,0,.12);
+    padding:26px 22px;
+    backdrop-filter: blur(10px);
+  }
+
+  .top{
+    display:flex;
+    gap:18px;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    text-align:center;
+  }
+
+  .cat{
+    width:110px;
+    height:110px;
+    border-radius:24px;
+    background: linear-gradient(180deg, #ffffff, #f6fbff);
+    border:1px solid #e7f3ff;
+    box-shadow: 0 12px 28px rgba(0,0,0,.08);
+    display:grid;
+    place-items:center;
+    position:relative;
+  }
+
+  /* Simple cat face */
+  .cat::before, .cat::after{
+    content:"";
+    position:absolute;
+    top:18px;
+    width:26px; height:26px;
+    background: #fff;
+    border: 2px solid #d9efff;
+    border-bottom: none;
+    border-right: none;
+    border-radius: 6px 6px 0 0;
+    transform: rotate(45deg);
+  }
+  .cat::before{ left:20px; }
+  .cat::after{ right:20px; transform: rotate(45deg) scaleX(-1); }
+
+  .face{
+    width:70px; height:62px;
+    border-radius:18px;
+    background:#fff;
+    border:1px solid #e7f3ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    position:relative;
+    margin-top:10px;
+  }
+  .eye{
+    width:10px; height:16px;
+    border-radius:999px;
+    background:#2b2b2b;
+  }
+  .nose{
+    position:absolute;
+    bottom:22px;
+    width:10px; height:8px;
+    background: var(--pink);
+    border-radius: 0 0 8px 8px;
+    transform: rotate(0deg);
+  }
+  .whisk{
+    position:absolute;
+    bottom:18px;
+    width:22px; height:2px;
+    background:#7aaed1;
+    opacity:.65;
+  }
+  .whisk.l1{ left:-18px; transform: rotate(10deg); }
+  .whisk.l2{ left:-18px; bottom:12px; transform: rotate(-10deg); }
+  .whisk.r1{ right:-18px; transform: rotate(-10deg); }
+  .whisk.r2{ right:-18px; bottom:12px; transform: rotate(10deg); }
+
+  h1{
+    font-size: clamp(26px, 4vw, 42px);
+    margin: 0;
+    letter-spacing:.2px;
+  }
+  .sub{
+    margin: 8px 0 0;
+    opacity:.8;
+    font-size: 15px;
+  }
+
+  .buttons-area{
+    margin-top:18px;
+    position:relative;
+    height: 240px;
+    border-radius: 18px;
+    border:1px dashed #ffffffa8;
+    background: linear-gradient(180deg, #ffffff6a, #ffffff1c);
+    overflow:hidden;
+  }
+
+  .btn{
+    font-size:18px;
+    padding: 12px 18px;
+    border-radius: 14px;
+    border: 1px solid #00000012;
+    cursor:pointer;
+    user-select:none;
+    box-shadow: 0 10px 26px rgba(0,0,0,.10);
+    transition: transform .08s ease, opacity .2s ease, filter .2s ease;
+  }
+  .btn:active{ transform: translateY(1px) scale(0.99); }
+  .btn:disabled{
+    cursor:not-allowed;
+    opacity:.55;
+    filter: grayscale(.3);
+  }
+
+  #yesBtn{
+    background: linear-gradient(180deg, #ffffff, #f3fbff);
+    border-color:#d9efff;
+  }
+  #noBtn{
+    background: linear-gradient(180deg, #fff0f7, #ffd6ea);
+    border-color:#ffd1e6;
+    position:absolute;
+    left: 58%;
+    top: 52%;
+  }
+
+  .yesWrap{
+    display:flex;
+    justify-content:center;
+    margin-top:16px;
+  }
+
+  .hint{
+    text-align:center;
+    margin-top:12px;
+    font-size:14px;
+    opacity:.75;
+  }
+
+  /* Floating hearts background */
+  .heart{
+    position:fixed;
+    bottom:-30px;
+    font-size:18px;
+    opacity:.9;
+    animation: floatUp linear forwards;
+    z-index:1;
+    pointer-events:none;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
+  }
+  @keyframes floatUp{
+    from{ transform: translateY(0) translateX(0) rotate(0deg); opacity:0.0; }
+    10%{ opacity:.95; }
+    to{ transform: translateY(-120vh) translateX(var(--drift)) rotate(20deg); opacity:0.0; }
+  }
+
+  /* Paw sparkle */
+  .paw{
+    position:fixed;
+    width: 22px;
+    height: 22px;
+    transform: translate(-50%, -50%) rotate(var(--rot));
+    opacity: .9;
+    pointer-events:none;
+    z-index:3;
+    animation: pawFade .65s ease-out forwards;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,.14));
+  }
+  @keyframes pawFade{
+    from{ transform: translate(-50%, -50%) scale(0.8) rotate(var(--rot)); opacity:.95; }
+    to{ transform: translate(-50%, -50%) scale(1.35) rotate(var(--rot)); opacity:0; }
+  }
+
+  /* Cute popup overlay */
+  .overlay{
+    position:fixed;
+    inset:0;
+    background: rgba(255,255,255,.55);
+    backdrop-filter: blur(6px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:10;
+  }
+  .modal{
+    width:min(520px, 92vw);
+    background:#fff;
+    border:1px solid #e7f3ff;
+    border-radius:22px;
+    padding:20px 18px;
+    box-shadow: 0 24px 80px rgba(0,0,0,.18);
+    text-align:center;
+  }
+  .modal h2{
+    margin: 4px 0 8px;
+    font-size: 34px;
+  }
+  .modal p{
+    margin: 0 0 12px;
+    opacity:.8;
+  }
+  .modal .bigcat{
+    font-size: 46px;
+    margin-bottom: 8px;
+  }
+
+  .pauseTag{
+    display:inline-block;
+    margin-top:10px;
+    padding:6px 10px;
+    border-radius:999px;
+    background: #e9f7ff;
+    border: 1px solid #d9efff;
+    font-size: 12px;
+    opacity:.85;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="top">
+        <div class="cat" aria-hidden="true">
+          <div class="face">
+            <span class="eye"></span>
+            <span class="eye"></span>
+            <span class="nose"></span>
+            <span class="whisk l1"></span><span class="whisk l2"></span>
+            <span class="whisk r1"></span><span class="whisk r2"></span>
+          </div>
+        </div>
+
+        <div>
+          <h1>Will you be my Valentine? 🐾💙</h1>
+          <div class="sub">A tiny cat has an important question for you…</div>
+        </div>
+      </div>
+
+      <div class="yesWrap">
+        <button class="btn" id="yesBtn">Yes 😸</button>
+      </div>
+
+      <div class="buttons-area" id="arena">
+        <button class="btn" id="noBtn">No 🙀</button>
+      </div>
+
+      <div class="hint">Try to click “No”… if you can 😼</div>
+    </div>
+  </div>
+
+  <!-- Popup -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="bigcat">😺💖</div>
+      <h2>YIPPEEE!!!</h2>
+      <p>Okay cool, we’re officially Valentines now.</p>
+      <div class="pauseTag">Paused ✨ (effects + buttons stopped)</div>
+    </div>
+  </div>
+
+<script>
+  // --- "Pause" state (stops everything) ---
+  var isPaused = false;
+
+  var noBtn = document.getElementById("noBtn");
+  var yesBtn = document.getElementById("yesBtn");
+  var arena = document.getElementById("arena");
+  var overlay = document.getElementById("overlay");
+
+  // Place NO button somewhere safe inside the arena at start
+  (function initNoButton(){
+    var rect = arena.getBoundingClientRect();
+    var x = Math.max(10, rect.width * 0.62);
+    var y = Math.max(10, rect.height * 0.52);
+    noBtn.style.left = x + "px";
+    noBtn.style.top  = y + "px";
+  })();
+
+  // Helpers: clamp within arena
+  function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+  // Move "No" if mouse gets near
+  function dodgeNoButton(){
+    if (isPaused) return;
+
+    var rect = arena.getBoundingClientRect();
+    var btnRect = noBtn.getBoundingClientRect();
+
+    // Random new position within arena
+    var maxLeft = rect.width - btnRect.width - 10;
+    var maxTop  = rect.height - btnRect.height - 10;
+
+    var newLeft = Math.random() * maxLeft;
+    var newTop  = Math.random() * maxTop;
+
+    noBtn.style.left = clamp(newLeft, 10, maxLeft) + "px";
+    noBtn.style.top  = clamp(newTop, 10, maxTop) + "px";
+  }
+
+  // "Near it" behavior: when mouse is in the arena, check distance to No
+  arena.addEventListener("mousemove", function(e){
+    if (isPaused) return;
+
+    var btnRect = noBtn.getBoundingClientRect();
+    var bx = btnRect.left + btnRect.width/2;
+    var by = btnRect.top  + btnRect.height/2;
+
+    var dx = e.clientX - bx;
+    var dy = e.clientY - by;
+    var dist = Math.sqrt(dx*dx + dy*dy);
+
+    // If mouse gets close, run away
+    if (dist < 90) dodgeNoButton();
+  });
+
+  // Also run away if hovered directly
+  noBtn.addEventListener("mouseover", function(){
+    dodgeNoButton();
+  });
+
+  // YES click: popup + pause program
+  yesBtn.addEventListener("click", function(){
+    if (isPaused) return;
+
+    // Popup alert as requested
+    alert("YIPPEEE!!!");
+
+    // Pause everything
+    isPaused = true;
+
+    // Disable buttons and show cute overlay
+    yesBtn.disabled = true;
+    noBtn.disabled = true;
+    overlay.style.display = "flex";
+  });
+
+  // --- Effects: floating hearts ---
+  var heartTimer = setInterval(function(){
+    if (isPaused) return;
+
+    var heart = document.createElement("div");
+    heart.className = "heart";
+    heart.textContent = (Math.random() < 0.5) ? "💙" : "💖";
+
+    var left = Math.random() * window.innerWidth;
+    var dur = 4 + Math.random() * 3; // 4–7s
+    var drift = (Math.random() * 160 - 80) + "px";
+
+    heart.style.left = left + "px";
+    heart.style.animationDuration = dur + "s";
+    heart.style.setProperty("--drift", drift);
+
+    document.body.appendChild(heart);
+
+    setTimeout(function(){
+      if (heart && heart.parentNode) heart.parentNode.removeChild(heart);
+    }, dur * 1000);
+  }, 380);
+
+  // --- Effects: paw sparkles follow mouse ---
+  function makePaw(x, y){
+    if (isPaused) return;
+
+    var paw = document.createElement("div");
+    paw.className = "paw";
+    paw.style.left = x + "px";
+    paw.style.top = y + "px";
+    paw.style.setProperty("--rot", (Math.random()*50 - 25) + "deg");
+
+    // Tiny inline SVG paw print (so it looks crisp)
+    paw.innerHTML =
+      '<svg viewBox="0 0 64 64" width="22" height="22" xmlns="http://www.w3.org/2000/svg">' +
+      '<path fill="#ff8fc8" d="M32 38c-9 0-16 6-16 13 0 5 4 9 16 9s16-4 16-9c0-7-7-13-16-13z"/>' +
+      '<circle cx="18" cy="26" r="6" fill="#ff8fc8"/>' +
+      '<circle cx="30" cy="18" r="6" fill="#ff8fc8"/>' +
+      '<circle cx="46" cy="26" r="6" fill="#ff8fc8"/>' +
+      '<circle cx="38" cy="18" r="6" fill="#ff8fc8"/>' +
+      '</svg>';
+
+    document.body.appendChild(paw);
+    setTimeout(function(){
+      if (paw && paw.parentNode) paw.parentNode.removeChild(paw);
+    }, 650);
+  }
+
+  var lastPaw = 0;
+  window.addEventListener("mousemove", function(e){
+    if (isPaused) return;
+
+    var now = Date.now();
+    if (now - lastPaw > 55) { // throttle so it doesn’t spam
+      makePaw(e.clientX, e.clientY);
+      lastPaw = now;
+    }
+  });
+
+  // If paused, stop creating hearts entirely (optional, but clean)
+  // We keep the timer but gate it with isPaused; leaving this here if you want full stop:
+  // function hardStopEffects(){ clearInterval(heartTimer); }
+</script>
+</body>
+</html>
